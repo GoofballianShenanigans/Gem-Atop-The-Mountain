@@ -7,7 +7,7 @@ started = False
 max_hp = 100
 location = ""
 current_hp = max_hp
-attack = 1
+attack = 2
 defense = 1
 gold = 0
 exp = 0
@@ -18,13 +18,18 @@ inshop = False
 shop = "none"
 
 enemy = "none"
-enemyclass = "none"
 thief1alive = True
+thief1hp = 6
 thief2alive = True
+thief2hp = 6
 slime1alive = True
+slime1hp = 9
 slime2alive = True
+slime2hp = 9
 slime3alive = True
+slime3hp = 9
 elitethiefalive = True
+elitethiefhp = 20
 
 m3oremined = False
 m5oremined = False
@@ -38,8 +43,8 @@ def levelup():
         if exp >= 20*level:
             level += 1
 
-# To be attack function
-def attack(object):
+# Attack function
+def fight(object):
     global enemy
     global enemyclass
     global current_hp
@@ -49,23 +54,70 @@ def attack(object):
     global exp
     global kills
 
+    global thief1hp
+    global thief2hp
+    global slime1hp
+    global slime2hp
+    global slime3hp
+    global elitethiefhp
+
+    global thief1alive
+    global thief2alive
+    global slime1alive
+    global slime2alive
+    global slime3alive
+    global elitethiefalive
+
+    if object == "thief":
+        if enemy == "thief1" and thief1alive == True:
+            damage = random.randint(-1, attack)
+            if damage > 0:
+                print("You succesfully attack the thief.")
+                thief1hp -= damage
+            else:
+                print("You attempt to attack, but the thief dodges.")
+            damage = random.randint(-defense, 2)
+            if damage > 0:
+                print("The thief stabs you with its dagger.")
+                current_hp -= damage
+                death()
+            else:
+                print("The thief fails to stab you with its dagger.")
+            if thief1hp <= 0:
+                print("You have succesfully slain the thief.")
+                print("+3 XP, +3 GOLD.")
+                exp += 3
+                gold += 3
+                enemy = "none"
+                thief1alive = False
+        if enemy == "thief2":
+            print("temp")
+        if enemy == "thief3":
+            print("temp")
+
 # Interact function
 def interact(object):
     global location
-
+    if object == "shop":
+        if location == "goldenfalls":
+            goldshop()
 # Interaction functions
 def goldshop():
     global gold
     global shop
     shop = "goldenfalls"
     inshop = True
-    print("'Hey there, venturer! Interested in my wares?'")
+    print("''Hey there, venturer! Interested in my wares?''")
     print("The shopkeeper shows you everything in stock.")
     print("Tempitem1: 15 gold.")
     print("Tempitem2: 10 gold, 2 ore.")
+    print("Tempitem3: 20 gold, 4 ore.")
+    print("")
+    print("Shop guide!")
+    print("Buy (item) - If you have the resources to buy an item, acquire it.")
+    print("Exit - exits the shop, allowing you to move freely again.")
 
-
-# Area functions
+# Death function
 def death():
     global current_hp
     global game_over
@@ -73,6 +125,8 @@ def death():
     if current_hp <=0:
         print("You have died.")
         game_over = True
+
+# Area functions
 
 def goldenfalls():
     global location
@@ -97,7 +151,6 @@ def m1():
     if thief1alive == True:
         print("A thief stands here, seemingly wanting to fight.")
         enemy = "thief1"
-        enemyclass = "thief"
 
 def m2():
     global location
@@ -115,7 +168,6 @@ def m3():
     if slime1alive == True:
         print("A bouncy slime stands in front of you, as if it wants to violently play.")
         enemy = "slime1"
-        enemyclass = "slime"
     if m3oremined == False:
         print("A rock with ores piques your interest, maybe you could use your pickaxe.")
 
@@ -127,7 +179,6 @@ def m4():
     if slime2alive == True:
         print("A bouncy slime stands in front of you, as if it wants to violently play")
         enemy = "slime2"
-        enemyclass = "slime"
 
 def m5():
     global location
@@ -154,7 +205,6 @@ def m7():
     if thief2alive == True:
         print("A thief stands here, seemingly wanting to fight.")
         enemy = "thief1"
-        enemyclass = "thief"
     if m7oremined == False:
         print("A rock with ores piques your interest, maybe you could use your pickaxe.")
 
@@ -165,7 +215,7 @@ def m8():
     print("You have climbed the clifftops of the meadow, Goldenfalls looming below you to the west.")
     if slime3alive == True:
         print("A bouncy slime stands in front of you, as if it wants to violently play")
-
+        enemy = "slime3"
 def h1():
     global location
     location = "h1"
@@ -273,11 +323,25 @@ while game_over == False:
 
     if commands[0] == "help":
         print("move (direction) - move in (direction) direction, uses compass directions.")
+        print("stats - allows you to check your stats.")
         print("interact (person/object) - allows you to potentially talk to someone, or check out something.")
         print("attack (enemy) - allows you to attack a potential threat that's around.")
 
     if commands[0] == "move":
         move(commands[1])
+
+    if commands[0] == "stats":
+        print("You have" , current_hp , "out of", max_hp)
+        print("You have" , attack , "attack.")
+        print("You have" , defense , "defense.")
+        print("You have" , exp , "XP.")
+        print("You have" , gold , "Gold.")
+
+    if commands[0] == "interact":
+        interact(commands[1])
+
+    if commands[0] == "attack":
+        fight(commands[1])
 
     if commands[0] == "checklocation":
         print(location)
