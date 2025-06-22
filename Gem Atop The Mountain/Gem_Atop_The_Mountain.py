@@ -87,6 +87,7 @@ corruptalive = True
 corrupthp = 35
 guardianalive = True
 guardianhp = 40
+gemhp = 50
 
 ethiefchoose = 0
 amechoose = 0
@@ -192,6 +193,7 @@ def fight(object):
     global goat3hp
     global corrupthp
     global guardianhp
+    global gemhp
 
     global ethiefchoose
     global ame_cb
@@ -716,49 +718,50 @@ def fight(object):
                 levelup()
 
     elif object == "menace":
-        damage = random.randint(-2, attack)
-        if damage > 0:
-            print("You attack the Crystal Menace with all your might to deal" , damage , "damage.")
-            crystalhp -= damage
-        if crystal_cb == 1:
-            damage = random.randint(-defense, 8)
+        if enemy == "menace" and crystalalive == True:
+            damage = random.randint(-2, attack)
             if damage > 0:
-                print("The crystal menace crushes you with its stone leg, dealing" , damage , "damage.")
-            else:
-                print("The crystal menace tries to lift its leg to crush you, but doesn't have the strength to.")
-        else:
-            crystal_choose = random.randint(1, 4)
-            if crystal_choose == 4:
-                damage = random.randint(-defense, 4)
+                print("You attack the Crystal Menace with all your might to deal" , damage , "damage.")
+                crystalhp -= damage
+            if crystal_cb == 1:
+                damage = random.randint(-defense, 8)
                 if damage > 0:
-                    damage += 2
-                    print("The Crystal Menace channels the power of the earth and deals" , damage , "damage.")
-                    current_hp -= damage
-                    death()
+                    print("The crystal menace crushes you with its stone leg, dealing" , damage , "damage.")
                 else:
-                    print("The Crystal Menace channels the power of the earth, to no avail.")
-            elif crystal_choose == 3:
-                print("The Crystal Menace starts lifting its leg, wanting to make a crushing blow.")
-                crystal_cb = 1
+                    print("The crystal menace tries to lift its leg to crush you, but doesn't have the strength to.")
             else:
-                damage = random.randint(-defense, 4)
-                if damage > 0:
-                    print("The Crystal Menace kicks you with its leg, dealing" , damage , "damage.")
-                    current_hp -= damage
-                    death()
+                crystal_choose = random.randint(1, 4)
+                if crystal_choose == 4:
+                    damage = random.randint(-defense, 4)
+                    if damage > 0:
+                        damage += 2
+                        print("The Crystal Menace channels the power of the earth and deals" , damage , "damage.")
+                        current_hp -= damage
+                        death()
+                    else:
+                        print("The Crystal Menace channels the power of the earth, to no avail.")
+                elif crystal_choose == 3:
+                    print("The Crystal Menace starts lifting its leg, wanting to make a crushing blow.")
+                    crystal_cb = 1
                 else:
-                    print("The Crystal Menace attempts to kick you, but is too slow.")
-        if crystalhp <= 0:
-            print("The Crystal Menace slowly toppes over, for you have conquered the beast.")
-            print("+10 XP, +10 GOLD.")
-            exp += 10
-            gold += 10
-            crystalalive = False
-            enemy = "none"
-            levelup()
+                    damage = random.randint(-defense, 4)
+                    if damage > 0:
+                        print("The Crystal Menace kicks you with its leg, dealing" , damage , "damage.")
+                        current_hp -= damage
+                        death()
+                    else:
+                        print("The Crystal Menace attempts to kick you, but is too slow.")
+            if crystalhp <= 0:
+                print("The Crystal Menace slowly toppes over, for you have conquered the beast.")
+                print("+10 XP, +10 GOLD.")
+                exp += 10
+                gold += 10
+                crystalalive = False
+                enemy = "none"
+                levelup()
 
     elif object == "ogre":
-        if enemy == "ogre":
+        if enemy == "ogre" and ogrealive == True:
             damage = random.randint(-1, attack)
             if damage > 0:
                 print("You land an attack on the ogre for" , damage , "damage.")
@@ -1034,7 +1037,7 @@ def fight(object):
                 golem1alive = False
                 enemy = "none"
                 levelup()
-        if enemy == "golem2" and golem2alive == True:
+        elif enemy == "golem2" and golem2alive == True:
             damage = random.randint(-3, attack)
             if damage > 0:
                 print("The golem's rocks start to crack as you hit it for" , damage , "damage.")
@@ -1067,13 +1070,159 @@ def fight(object):
                 golem2alive = False
                 enemy = "none"
                 levelup()
+
+    elif object == "fragment":
+        if enemy == "fragment" and corruptalive == True:
+            damage = random.randint (-2, attack)
+            if damage > 0:
+                print("The corrupt fragment fractures as you hit it, dealing", damage , "damage.")
+                corrupthp -= damage
+            if summit_cb == 1:
+                damage = random.randint (-defense, 10)
+                if damage > 0:
+                    print("The very land you stand on flings you into the sky, crushing your bones on the ground as you land for" , damage , "damage.")
+                    current_hp -= damage
+                    death()
+                else:
+                    print("As the very land tries to fling you into the sky, you stand your ground.")
+            else:
+                summit_choose = random.randint(1, 4)
+                if summit_choose == 4:
+                    print("The corrupt fragment summons an aura of purple energy around it, preparing a crushing blow.")
+                    summit_cb = 1
+                elif summit_choose == 3:
+                    print("The corrupt fragment does not move, but you can feel your insides explode in purple blood, dealing 7 damage.")
+                    current_hp -= 7
+                    death()
+                else:
+                    damage = random.randint(-defense, 5)
+                    if damage > 0:
+                        print("A snowy boulder is hurled at you with a magical force, dealing" , damage , "damage.")
+                        current_hp -= damage
+                        death()
+                    else:
+                        print("A snowy boulder is hurled to the side of you.")
+            if corrupthp <= 0:
+                print("The Corrupt Fragment of the land shatters into hundreds of pieces, the purple energy fading away.")
+                print("+10 XP, +9 GOLD.")
+                exp += 10
+                gold += 9
+                corruptalive = False
+                enemy = "none"
+                levelup()
+                summit_cb = 0
+
+    elif object == "guardian":
+        if enemy == "guardian" and guardianalive == True:
+            damage = random.randint(-2, attack)
+            if damage > 0:
+                print("You clash at The Guardian's armour and wound the man inside for" , damage , "damage.")
+                guardianhp -= damage
+            if summit_cb == 1:
+                damage = random.randint(-defense, 10)
+                if damage > 0:
+                    print("The Guardian slams down on you with its sword, dealing" , damage , "damage.")
+                    current_hp -= damage
+                    death()
+                else:
+                    print("As The Guardian slams its sword down on you, you manage to swerve to the side.")
+            else:
+                summit_choose = random.randint(1, 4)
+                if summit_choose == 4:
+                    print("The guardian raises its sword, preparing to make a crushing blow.")
+                    summit_cb = 1
+                elif summit_choose == 3:
+                    damage = random.randint(1, 4)
+                    print("The Guardian strikes you with its sword, quicker than you can react, dealing" , damage , "damage.")
+                    current_hp -= damage
+                    death()
+                else:
+                    damage = random.randint(-defense, 5)
+                    if damage > 0:
+                        print("The Guardian slashes powerfully at you with its sword, dealing" , damage , "damage.")
+                        current_hp -= damage
+                        death()
+                    else:
+                        print("The Guardian lifts its sword to make an attack, but it is too heavy.")
+            if guardianhp <= 0:
+                print("The guardian kneels down in defeat.")
+                print("'Great job, fighter, you have bested me in battle. You may enter The Podium.'")
+                print("+ 12XP, + 10GOLD")
+                exp += 12
+                gold += 10
+                guardianalive = False
+                enemy = "none"
+                summit_cb = 0
+                levelup()
+
+    elif object == "gem":
+        if enemy == "gem":
+            damage = random.randint(-3, attack)
+            if damage > 0:
+                print("YOUR ATTACK SUCCESFULLY BRUISES THE GEM FOR" , damage , "DAMAGE.")
+            else:
+                print("YOUR PUNY, MORTAL ATTACK WAS NOT GOOD ENOUGH TO EVEN DENT THE GEM.")
+            if summit_cb == 1:
+                damage = random.randint(-defense, 12)
+                if damage > 0:
+                    print("THE GEM FALLS DOWN ON YOU WITH A CRUSHING FORCE, DEALING" , damage , "DAMAGE.")
+                    current_hp -= damage
+                    death()
+                else:
+                    print("THE GEM FALLS DOWN BESIDE YOU WITH A CRUSHING FORCE, SHATTERING THE GROUND TO THE SIDE.")
+            else:
+                summit_choose = random.randint(1, 5)
+                if summit_choose == 5:
+                    damage = random.randint(-defense, 2)
+                    if damage > 0:
+                        print("THE GEM CHANNELS ITS DIVINITY UPON YOU, AS THE LIGHT OVERCOMES YOU IN GRAND GLORY.")
+                        current_hp -= 20
+                        death()
+                    else:
+                        print("THE GEM CHANNELS ITS DIVINITY, BUT FAILS. YOU HAVE BEEN SPARED.")
+                elif summit_choose == 4:
+                    damage = random.randint(-defense, 6)
+                    if damage > 0:
+                        print("THE GEM HARNESSES THE POWER OF LIGHT TO BLIND YOU FOR" , damage , "DAMAGE AND RESTORE ITSELF.")
+                        current_hp -= damage
+                        gemhp += 5
+                        death()
+                    else:
+                        print("THE GEM CHARGES THE POWER OF LIGHT, TO NO AVAIL.")
+                elif summit_choose == 3:
+                    for i in range(0, 2):
+                        damage = random.randint(-defense, 6)
+                        if damage > 0:
+                            print("THE GEM HARNESSES THE POWER OF FLAME TO BURN YOU ALIVE, DEALING" , damage , "DAMAGE.")
+                            current_hp -= damage
+                            death()
+                        else:
+                            print("THE GEM HARNESSES THE POWER OF FLAME TO BURN TO ALIVE, BUT THE FLAME DOESN'T BURN BRIGHT ENOUGH.")
+                elif summit_choose == 2:
+                    print("THE GEM STARTS TO LEVITATE ABOVE YOU, PREPARING THE MOST DEVASTATING CRUSHING BLOW OF ALL.")
+                    summit_cb = 1
+                else:
+                    damage = random.randint(-defense, 6)
+                    if damage > 0:
+                        print("THE GEM SHOOTS A MAGICAL PROJECTILE AT YOU, DEALING" , damage , "DAMAGE.")
+                        current_hp -= damage
+                        death()
+                    else:
+                        print("THE GEM SHOOTS A MAGICAL PROJECTILE, YOU WATCH IN FEAR AS IT SHOOTS TO THE SIDE.")
+            if gemhp <= 0:
+                print("The Gem's colour starts to fade...")
+                print("Its sentience has been drained out in battle.")
+                print("There it lay, on the podium, now powerless to stop you from grabbing it.")
+                print("It's all yours, fighter. You have acquired THE GEM ATOP THE MOUNTAIN!")
+                game_over = True
+
 # Interact function
 def interact(object):
     global location
     if object == "shop":
         if location == "goldenfalls":
             goldshop()
-# Interaction functions
+# Shop functions
 def goldshop():
     global gold
     global shop
@@ -1082,11 +1231,11 @@ def goldshop():
     inshop = True
     print("'Hey there, venturer! Interested in my wares?'")
     print("The shopkeeper shows you everything in stock.")
-    print("Iron Sword: 10 gold.")
-    print("Bottle O' Heals: 5 gold.")
+    print("Iron Sword (weapon): 10 gold.")
+    print("Potion O' Heals (potion): 5 gold.")
     print("")
     print("Shop guide!")
-    print("Buy (item) - If you have the resources to buy an item, acquire it.")
+    print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
     print("Exit - exits the shop, allowing you to move freely again.")
 def rockshop():
     global gold
@@ -1096,13 +1245,40 @@ def rockshop():
     inshop = True
     print("'Hey there, venturer! Interested in my wares?'")
     print("The shopkeeper shows you everything in stock.")
-    print("Dagger Of Mounds: 25 gold.")
-    print("Stone Mace: 25 gold.")
-    print("Bottle O' Heals: 5 gold.")
+    print("Dagger Of Mounds (weapon): 20 gold.")
+    print("Boar's Hide (armour): 25 gold.")
+    print("Bottle O' Heals (potion): 5 gold.")
     print("")
     print("Shop guide!")
-    print("Buy (item) - If you have the resources to buy an item, acquire it.")
+    print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
     print("Exit - exits the shop, allowing you to move freely again.")
+def campshop():
+    global gold
+    global shop
+    global inshop
+    shop = "camp"
+    inshop = True
+    print("'Hey there, venturer! Interested in my wares?'")
+    print("The shopkeeper shows you everything in stock.")
+    print("Gleaming Shard (weapon): 30 gold.")
+    print("Arcane Plate (armour): 25 gold.")
+    print("Blessed Bottle O' Heals (potion): 5 gold.")
+    print("")
+    print("Shop guide!")
+    print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
+    print("Exit - exits the shop, allowing you to move freely again.")
+
+def buy(object):
+    global gold
+    global shop
+
+def exitshop():
+    global inshop
+    global shop
+    if inshop == True:
+        print("'Farewell, wish you luck with your journey!'")
+        inshop = False
+        shop = "none"
 # Death function
 def death():
     global current_hp
@@ -1943,3 +2119,9 @@ while game_over == False:
 
     if commands[0] == "attack":
         fight(commands[1])
+
+    if commands[0] == "exit":
+        exitshop()
+
+    if commands[0] == "buy":
+        buy(commands[1])
