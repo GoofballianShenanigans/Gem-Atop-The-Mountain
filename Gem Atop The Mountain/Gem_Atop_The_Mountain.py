@@ -14,7 +14,7 @@ defense = 1
 gold = 0
 exp = 0
 level = 1
-kills = 0
+potions = 0
 
 inshop = False
 shop = "none"
@@ -126,6 +126,7 @@ def fight(object):
     global gold
     global exp
     global kills
+    global damage
 
     global thief1hp
     global thief2hp
@@ -418,6 +419,7 @@ def fight(object):
             damage = random.randint(-1, attack)
             if damage > 0:
                 print("You land an attack on the Topaz Fighter for" , damage , "damage.")
+                topazhp -= damage
             else:
                 print("The topaz clashes with your weapon, nullifying your attack.")
             topazchoose = random.randint(1, 4)
@@ -671,6 +673,8 @@ def fight(object):
             if damage > 0:
                 print("You make a blow at the stalagmite for" , damage , "damage.")
                 piercer1hp -= damage
+            else:
+                print("You make a blow at the stalagmite, but it stays strong.")
             piercer_choose = random.randint(1, 3)
             if piercer_choose == 3:
                 damage = random.randint(-defense, 4)
@@ -1222,6 +1226,16 @@ def interact(object):
     if object == "shop":
         if location == "goldenfalls":
             goldshop()
+        elif location == "rockilum":
+            rockshop()
+        elif location == "camp":
+            campshop()
+    elif object == "gem":
+        if location == "podium":
+            print("As you try to grab the gem, it starts to fly and spin in the air.")
+            print("You fool, you absolute buffoon! It was never going tpo be this easy!")
+            print("The Gem is now your final opponent. Raise your blade if you dare, but its not like you can escape.")
+            enemy = "gem"
 # Shop functions
 def goldshop():
     global gold
@@ -1232,7 +1246,7 @@ def goldshop():
     print("'Hey there, venturer! Interested in my wares?'")
     print("The shopkeeper shows you everything in stock.")
     print("Iron Sword (weapon): 10 gold.")
-    print("Potion O' Heals (potion): 5 gold.")
+    print("Potion O' Heals (potion): 10 gold.")
     print("")
     print("Shop guide!")
     print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
@@ -1247,7 +1261,7 @@ def rockshop():
     print("The shopkeeper shows you everything in stock.")
     print("Dagger Of Mounds (weapon): 20 gold.")
     print("Boar's Hide (armour): 25 gold.")
-    print("Bottle O' Heals (potion): 5 gold.")
+    print("Bottle O' Heals (potion): 10 gold.")
     print("")
     print("Shop guide!")
     print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
@@ -1262,7 +1276,7 @@ def campshop():
     print("The shopkeeper shows you everything in stock.")
     print("Gleaming Shard (weapon): 30 gold.")
     print("Arcane Plate (armour): 25 gold.")
-    print("Blessed Bottle O' Heals (potion): 5 gold.")
+    print("Bottle O' Heals 3 Pack (potion): 25 gold.")
     print("")
     print("Shop guide!")
     print("Buy (item) - If you have the cost to buy an item, acquire it. Use the tag in brackets.")
@@ -1271,6 +1285,73 @@ def campshop():
 def buy(object):
     global gold
     global shop
+    global inshop
+    global attack
+    global defense
+    global max_hp
+    global current_hp
+    global potions
+    if object == "weapon":
+        if shop == "goldenfalls":
+            if gold >= 10:
+                attack += 1
+                gold -= 10
+                print("'Great purchase!'")
+            else:
+                print("'You don't have the funds for that...'")
+        elif shop == "rockilum":
+            if gold >= 20:
+                attack += 2
+                gold -= 20
+                print("'Great purchase!'")
+            else:
+                print("'You don't have the funds for that...'")
+        elif shop == "camp":
+            if gold >= 30:
+                attack += 3
+                gold -= 30
+                print("'Great purchase!'")
+            else:
+                print("'You don't have the funds for that...'")
+        else:
+            print("You aren't in a shop!")
+
+    elif object == "armour":
+        if shop == "rockilum":
+            if gold >= 25:
+                defense += 1
+                gold -= 25
+                print("'Great purchase!'")
+            else:
+                print("'You don't have the funds for that...'")
+        elif shop == "camp":
+            if gold >= 25:
+                defense += 2
+                max_hp += 25
+                current_hp = max_hp
+                gold -= 25
+                print("Great purchase!")
+            else:
+                print("'You don't have the funds for that...'")
+        else:
+            print("You can't seem to find this item to buy...")
+
+    elif object == "potion":
+        if inshop == True:
+            if shop == "camp":
+                if gold >= 25:
+                    potions += 3
+                    gold -= 10
+                    print("'Great purchase!'")
+                else:
+                    print("'You don't have the funds for that...'")
+            else:
+                if gold >= 10:
+                    potions += 1
+                    gold -= 10
+                    print("'Great purchase!'")
+                else:
+                    print("'You don't have the funds for that...'")
 
 def exitshop():
     global inshop
@@ -1287,6 +1368,20 @@ def death():
     if current_hp <=0:
         print("You have died.")
         game_over = True
+# Use function (only for potions lol!!!)
+def use(object):
+    global potions
+    global current_hp
+    global max_hp
+    if object == "potion":
+        if potions >= 1:
+            current_hp += 25
+            potions -= 1
+            if current_hp > max_hp:
+                current_hp = max_hp
+            print("You expend one of your health potions to restore yourself.")
+        else:
+            print("You don't have a potion to use...")
 # Area functions
 def goldenfalls():
     global location
@@ -2119,6 +2214,9 @@ while game_over == False:
 
     if commands[0] == "attack":
         fight(commands[1])
+
+    if commands[0] == "use":
+        use(commands[1])
 
     if commands[0] == "exit":
         exitshop()
